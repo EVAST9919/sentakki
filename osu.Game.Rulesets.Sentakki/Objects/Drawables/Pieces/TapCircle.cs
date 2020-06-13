@@ -2,6 +2,8 @@
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
+using osu.Game.Configuration;
+using osu.Game.Rulesets.Sentakki.Configuration;
 using osu.Game.Rulesets.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
@@ -33,10 +35,14 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
 
         private readonly IBindable<ArmedState> state = new Bindable<ArmedState>();
         private readonly IBindable<Color4> accentColour = new Bindable<Color4>();
+        private readonly Bindable<float> noteSize = new Bindable<float>(70);
 
-        [BackgroundDependencyLoader]
-        private void load(DrawableHitObject drawableObject)
+        [BackgroundDependencyLoader(true)]
+        private void load(DrawableHitObject drawableObject, SentakkiRulesetConfigManager configs)
         {
+            configs?.BindWith(SentakkiRulesetSettings.NoteSize, noteSize);
+            noteSize.BindValueChanged(size => Size = new Vector2(size.NewValue), true);
+
             Tap osuObject = (Tap)drawableObject.HitObject;
 
             state.BindTo(drawableObject.State);

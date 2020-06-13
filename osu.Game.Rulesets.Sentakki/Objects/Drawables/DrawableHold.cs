@@ -140,6 +140,7 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables
         {
             base.Update();
             if (Result.HasResult) return;
+            float offset = 66 - note.NoteSize.Value / 2;
 
             double animSpeed = animationDuration.Value / 2;
             double fadeIn = animSpeed * GameplaySpeed;
@@ -169,7 +170,7 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables
             if (extendAmount < 0) extendAmount = 0;
             else if (extendAmount > 1) extendAmount = 1;
 
-            note.Height = (float)(80 + (length * extendAmount));
+            note.Height = (float)(note.NoteSize.Value + (length * extendAmount));
 
             // Calculate duration where no movement is happening (when notes are very long)
             float idleTime = (float)((HitObject as IHasDuration).Duration - extendTime);
@@ -180,10 +181,10 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables
             else if (moveAmount > 1) moveAmount = 1;
 
             float yDiff = SentakkiPlayfield.INTERSECTDISTANCE - 66;
-            note.Y = -26 - (yDiff * moveAmount);
+            note.Y = -offset - (yDiff * moveAmount);
 
             // Start shrinking when the time comes
-            float shrinkAmount = Math.Abs(note.Y) + note.Height - SentakkiPlayfield.INTERSECTDISTANCE - 40;
+            float shrinkAmount = Math.Abs(note.Y) + note.Height - SentakkiPlayfield.INTERSECTDISTANCE - note.NoteSize.Value / 2;
             if (shrinkAmount > 0)
                 note.Height -= shrinkAmount;
 

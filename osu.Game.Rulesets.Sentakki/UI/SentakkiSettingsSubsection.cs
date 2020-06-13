@@ -68,6 +68,11 @@ namespace osu.Game.Rulesets.Sentakki.UI
                     KeyboardStep = 0.01f,
                     DisplayAsPercentage = true
                 },
+                new SettingsSlider<float>{
+                    LabelText = "Note size",
+                    Bindable = config.GetBindable<float>(SentakkiRulesetSettings.NoteSize),
+                    KeyboardStep = 5
+                }
             };
         }
 

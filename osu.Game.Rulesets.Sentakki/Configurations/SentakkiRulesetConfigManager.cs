@@ -23,6 +23,7 @@ namespace osu.Game.Rulesets.Sentakki.Configuration
             Set(SentakkiRulesetSettings.RingColor, ColorOption.Default);
             Set(SentakkiRulesetSettings.RingOpacity, 1f, 0f, 1f, 0.01f);
             Set(SentakkiRulesetSettings.BreakSounds, true);
+            Set(SentakkiRulesetSettings.NoteSize, 75, 70, 80, 5);
         }
     }
 
@@ -43,5 +44,6 @@ namespace osu.Game.Rulesets.Sentakki.Configuration
         RingColor,
         BreakSounds,
         TouchAnimationDuration,
+        NoteSize,
     }
 }

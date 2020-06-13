@@ -3,6 +3,8 @@ using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Shapes;
+using osu.Game.Configuration;
+using osu.Game.Rulesets.Sentakki.Configuration;
 using osu.Game.Rulesets.Objects.Drawables;
 using osuTK;
 using osuTK.Graphics;
@@ -15,6 +17,9 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
         private readonly ExplodePiece explode;
         private readonly Container note;
         public readonly GlowPiece Glow;
+
+        private readonly CircularContainer dot1;
+        private readonly CircularContainer dot2;
 
         public double Duration = 0;
 
@@ -81,7 +86,7 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
                                 AlwaysPresent = true,
                             }
                         },
-                        new CircularContainer
+                        dot1 = new CircularContainer
                         {
                             Position = new Vector2(0, -40),
                             Size = new Vector2(20),
@@ -97,7 +102,7 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
                                 Colour = Color4.White,
                             }
                         },
-                        new CircularContainer
+                        dot2 = new CircularContainer
                         {
                             Position = new Vector2(0, 40),
                             Size = new Vector2(20),
@@ -123,10 +128,21 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
         private readonly IBindable<ArmedState> state = new Bindable<ArmedState>();
         private readonly IBindable<Color4> accentColour = new Bindable<Color4>();
 
-        [BackgroundDependencyLoader]
-        private void load(DrawableHitObject drawableObject)
+        public readonly Bindable<float> NoteSize = new Bindable<float>(70);
+
+        [BackgroundDependencyLoader(true)]
+        private void load(DrawableHitObject drawableObject, SentakkiRulesetConfigManager configs)
         {
             Hold osuObject = (Hold)drawableObject.HitObject;
+
+            configs?.BindWith(SentakkiRulesetSettings.NoteSize, NoteSize);
+            NoteSize.BindValueChanged(size =>
+            {
+                Position = new Vector2(0, -(66 - size.NewValue / 2));
+                Size = new Vector2(size.NewValue);
+                dot1.Position = new Vector2(0, -size.NewValue / 2);
+                dot2.Position = new Vector2(0, size.NewValue / 2);
+            }, true);
 
             state.BindTo(drawableObject.State);
             state.BindValueChanged(updateState, true);
