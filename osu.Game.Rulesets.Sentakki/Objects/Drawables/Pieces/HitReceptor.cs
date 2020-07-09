@@ -41,6 +41,24 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
             //Add(new HoverReceptor());
         }
 
+        protected override void OnTouchMove(TouchMoveEvent e)
+        {
+            // Touch move on
+            if (!Contains(e.ScreenSpaceLastTouchPosition) && Contains(e.ScreenSpaceTouch.Position))
+            {
+                if (NotePath.HasValue)
+                    SentakkiActionInputManager.CurrentPath.Add(NotePath.Value);
+                Hit?.Invoke();
+            }
+            //Touch move off
+            else if (Contains(e.ScreenSpaceLastTouchPosition) && !Contains(e.ScreenSpaceTouch.Position))
+            {
+                Release?.Invoke();
+                if (NotePath.HasValue)
+                    SentakkiActionInputManager.CurrentPath.Remove(NotePath.Value);
+            }
+        }
+
         protected override bool OnTouchDown(TouchDownEvent e)
         {
             if (Contains(e.ScreenSpaceTouchDownPosition))
@@ -57,7 +75,6 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
             Release?.Invoke();
             if (NotePath.HasValue)
                 SentakkiActionInputManager.CurrentPath.Remove(NotePath.Value);
-
         }
         /* public virtual bool OnPressed(SentakkiAction action)
         {
