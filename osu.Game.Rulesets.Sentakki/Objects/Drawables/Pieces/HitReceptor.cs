@@ -1,3 +1,4 @@
+using osu.Framework.Extensions.PolygonExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Input.Bindings;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 
 namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
 {
-    public class HitReceptor : CircularContainer, IKeyBindingHandler<SentakkiAction>
+    public class HitReceptor : CircularContainer/* , IKeyBindingHandler<SentakkiAction> */
     {
         // IsHovered is used
         public override bool HandlePositionalInput => true;
@@ -22,7 +23,7 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
         public Action Release;
 
         public int? NotePath = null;
-        public bool HoverAction()
+        /* public bool HoverAction()
         {
             if (!NotePath.HasValue || !SentakkiActionInputManager.CurrentPath.Contains(NotePath.Value))
             {
@@ -30,17 +31,35 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
                     actions.AddRange(SentakkiActionInputManager.PressedActions.Except(actions));
             }
             return false;
-        }
+        } */
         public HitReceptor()
         {
             RelativeSizeAxes = Axes.None;
             Size = new Vector2(240);
             Anchor = Anchor.Centre;
             Origin = Anchor.Centre;
-            Add(new HoverReceptor());
+            //Add(new HoverReceptor());
         }
 
-        public virtual bool OnPressed(SentakkiAction action)
+        protected override bool OnTouchDown(TouchDownEvent e)
+        {
+            if (Contains(e.ScreenSpaceTouchDownPosition))
+            {
+                if (NotePath.HasValue)
+                    SentakkiActionInputManager.CurrentPath.Add(NotePath.Value);
+                return Hit?.Invoke() ?? false;
+            }
+            return false;
+        }
+
+        protected override void OnTouchUp(TouchUpEvent e)
+        {
+            Release?.Invoke();
+            if (NotePath.HasValue)
+                SentakkiActionInputManager.CurrentPath.Remove(NotePath.Value);
+
+        }
+        /* public virtual bool OnPressed(SentakkiAction action)
         {
             if (IsHovered)
             {
@@ -62,7 +81,7 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
                     SentakkiActionInputManager.CurrentPath.Remove(NotePath.Value);
             }
         }
-
+ */
         protected override void OnHoverLost(HoverLostEvent e)
         {
             if (NotePath.HasValue)
@@ -74,7 +93,7 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
             }
         }
 
-        internal class HoverReceptor : CircularContainer
+        /* internal class HoverReceptor : CircularContainer
         {
             public HoverReceptor()
             {
@@ -84,6 +103,6 @@ namespace osu.Game.Rulesets.Sentakki.Objects.Drawables.Pieces
             }
 
             protected override bool OnHover(HoverEvent e) => (Parent as HitReceptor).HoverAction();
-        }
+        } */
     }
 }

@@ -39,6 +39,7 @@ namespace osu.Game.Rulesets.Sentakki
             : base(ruleset, 0, SimultaneousBindingMode.Unique)
         {
         }
+        protected override bool MapMouseToPrimaryTouch => false;
 
         public List<int> CurrentPath = new List<int>();
     }
